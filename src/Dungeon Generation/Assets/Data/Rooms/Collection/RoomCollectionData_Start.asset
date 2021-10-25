@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ddf67ce8484364acf90291289f3fe5, type: 3}
+  m_Name: RoomCollectionData_Start
+  m_EditorClassIdentifier: 
+  <StartRoom>k__BackingField: {fileID: 11400000, guid: 7f514f943b2d425409c46fcc4a63d16b, type: 2}
+  <Rooms>k__BackingField:
+  - {fileID: 11400000, guid: 7f514f943b2d425409c46fcc4a63d16b, type: 2}

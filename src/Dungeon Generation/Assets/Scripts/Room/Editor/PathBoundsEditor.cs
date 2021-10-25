@@ -17,21 +17,22 @@ public class PathBoundsEditor : Editor
 		if (_information.PathBounds == null) return;
 		var paths = _information.PathBounds;
 		EditorGUI.BeginChangeCheck();
-		foreach (PathBounds t in paths)
+		foreach (var t in paths)
 		{
-			Bounds path = t.Bounds;
-			t.BoundsHandle.center = path.center;
-			t.BoundsHandle.size = path.size;
+			var path = t.Bounds;
+			t.BoundsHandle.center = path.center + _information.transform.position;
+			t.BoundsHandle.size   = path.size;
 			t.BoundsHandle.DrawHandle();
-			t.BoundsHandle.center = Handles.PositionHandle(path.center, Quaternion.identity);
+			t.BoundsHandle.center =
+				Handles.PositionHandle(path.center + _information.transform.position, Quaternion.identity);
 		}
 
 		if (!EditorGUI.EndChangeCheck()) return;
-		foreach (PathBounds t in paths)
+		foreach (var t in paths)
 		{
 			Undo.RecordObject(target, "Moved paths");
-			BoxBoundsHandle handle = t.BoundsHandle;
-			t.Bounds = new Bounds(handle.center, handle.size);
+			var handle = t.BoundsHandle;
+			t.Bounds = new Bounds(handle.center - _information.transform.position, handle.size);
 		}
 	}
 

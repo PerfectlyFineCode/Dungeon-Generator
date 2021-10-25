@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a61fdda879a4f9a41bee2a907a8f3302, type: 3}
   m_Name: RoomData_Start
   m_EditorClassIdentifier: 
+  <Room>k__BackingField: {fileID: 5028089618878109077, guid: 39f7bdcaf30ebe941b19f68bfbb63f78, type: 3}
