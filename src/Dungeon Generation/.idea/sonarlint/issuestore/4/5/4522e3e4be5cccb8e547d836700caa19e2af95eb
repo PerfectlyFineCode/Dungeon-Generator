@@ -1,4 +1,5 @@
 
-Kcsharpsquid:S3903"/Move 'DungeonGenerator' into a named namespace.(ôŞğA
-\csharpsquid:S1172"3Remove this unused method parameter 'currentDepth'.(Ûè°™ıÿÿÿÿ8—Û”½Ë/
-_csharpsquid:S1481("6Remove the unused local variable 'currentRoomExtents'.(®ë†úÿÿÿÿ8ÔÓ“½Ë/
+Rcsharpsquid:S3903"/Move 'DungeonGenerator' into a named namespace.(ôŞğA8‚àæÜË/
+Acsharpsquid:S2933"Make 'BoundsList' 'readonly'.(Âì—÷8ƒàæÜË/
+_csharpsquid:S1481+"6Remove the unused local variable 'currentRoomExtents'.(®ë†úÿÿÿÿ8ƒàæÜË/
+Scsharpsquid:S1481,"/Remove the unused local variable 'roomExtents'.(â…¾¢8ƒàæÜË/

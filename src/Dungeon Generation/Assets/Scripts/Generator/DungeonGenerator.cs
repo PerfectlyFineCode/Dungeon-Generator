@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class DungeonGenerator : MonoBehaviour
 {
-	private const int MaxRetries = 30;
+	private const int MaxRetries = 200;
+	private const int MaxDepth = 1000;
 
 	public void Generate(Vector3 startPoint, RoomCollectionData data)
 	{
@@ -15,18 +16,20 @@ public class DungeonGenerator : MonoBehaviour
 		if (!startRoom.TryGetComponent(out RoomInformation information)) return;
 		information.Name = "Start";
 		CurrentRooms     = new List<RoomInformation>(new[] { information });
-		GenerateRoom(ref data, information, information);
+		StartCoroutine(GenerateRoom(data, information, information));
 	}
 
 	private List<RoomInformation> CurrentRooms;
+	private Dictionary<int, Bounds> BoundsList = new Dictionary<int, Bounds>();
 
-	private void GenerateRoom(ref RoomCollectionData data, RoomInformation startRoom,
-		RoomInformation previousRoom = null, int currentDepth = 0, int number = 0)
+	private IEnumerator GenerateRoom(RoomCollectionData data, RoomInformation startRoom,
+		RoomInformation previousRoom = null, int currentDepth = 0)
 	{
+		if (currentDepth >= MaxDepth) yield break;
 		Bounds   currentBounds = default;
 		RoomData currentRoom   = null;
 		var      retries       = 0;
-
+		BoundsList.Add(currentDepth, currentBounds);
 		do
 		{
 			if (retries >= MaxRetries) break;
@@ -40,22 +43,23 @@ public class DungeonGenerator : MonoBehaviour
 			var currentRoomExtents = startRoom.Bounds.extents;
 			var roomExtents        = roomData.GetRoomBounds.extents;
 
-			var pos = startPoint
-			          + new Vector3(endPoint.x * roomExtents.magnitude, 0, endPoint.z * roomExtents.magnitude);
+			var pos = startPoint + endPoint;
 
 			currentBounds = new Bounds(pos, roomSize);
 			Debug.Log("Generating new ..");
+			BoundsList[currentDepth] = currentBounds;
+			yield return new WaitForSeconds(0.5f);
 			currentRoom = roomData;
 		} while (IntersectsAny(CurrentRooms, currentBounds));
 
-		if (currentRoom == null || IntersectsAny(CurrentRooms, currentBounds)) return;
+		if (currentRoom == null || IntersectsAny(CurrentRooms, currentBounds)) yield break;
 
 		var roomObject      = Instantiate(currentRoom.Room, currentBounds.center, Quaternion.identity);
 		var roomInformation = roomObject.GetComponent<RoomInformation>();
 		roomInformation.Parent = previousRoom;
-		roomInformation.Name   = $"{number}";
+		roomInformation.Name   = $"{currentDepth}";
 		CurrentRooms.Add(roomInformation);
-		GenerateRoom(ref data, startRoom, roomInformation, number + 1);
+		StartCoroutine(GenerateRoom(data, startRoom, roomInformation, currentDepth + 1));
 		Debug.Log("Success");
 	}
 
@@ -66,6 +70,10 @@ public class DungeonGenerator : MonoBehaviour
 
 	private void OnDrawGizmos()
 	{
+		if (BoundsList != null)
+			foreach (var bounds in BoundsList.Values)
+				Gizmos.DrawWireCube(bounds.center, bounds.size);
+
 		if (CurrentRooms == null) return;
 		foreach (var info in CurrentRooms)
 		{
