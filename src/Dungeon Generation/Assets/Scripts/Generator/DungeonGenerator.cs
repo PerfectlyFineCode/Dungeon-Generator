@@ -31,7 +31,7 @@ public class DungeonGenerator : MonoBehaviour
 		GameObject startRoom = Instantiate(data.StartRoom.Room);
 		if (!startRoom.TryGetComponent(out RoomInformation information)) return;
 		information.Name = "Start";
-		CurrentRooms = new List<RoomInformation>(new[] { information });
+		CurrentRooms     = new List<RoomInformation>(new[] { information });
 		StartCoroutine(GenerateRoom(data, information, information));
 	}
 
@@ -58,7 +58,12 @@ public class DungeonGenerator : MonoBehaviour
 			Vector3 currentRoomExtents = startRoom.Bounds.extents;
 			Vector3 roomExtents = roomData.GetRoomBounds.extents;
 
-			Vector3 pos = startPoint + endPoint;
+			Vector3 diff = startPoint - endPoint;
+
+			var pos = new Vector3(
+				startPoint.x + endPoint.x,
+				startRoom.Bounds.center.y,
+				startPoint.z + endPoint.z);
 
 
 			currentBounds = new Bounds(pos, roomSize);
@@ -74,7 +79,7 @@ public class DungeonGenerator : MonoBehaviour
 			Quaternion.identity);
 		var roomInformation = roomObject.GetComponent<RoomInformation>();
 		roomInformation.Parent = previousRoom;
-		roomInformation.Name = $"{currentDepth}";
+		roomInformation.Name   = $"{currentDepth}";
 		CurrentRooms.Add(roomInformation);
 		StartCoroutine(GenerateRoom(data, startRoom, roomInformation, currentDepth + 1));
 		Debug.Log("Success");
