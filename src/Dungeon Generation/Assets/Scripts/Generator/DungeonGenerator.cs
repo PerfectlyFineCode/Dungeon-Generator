@@ -8,6 +8,7 @@ public class DungeonGenerator : MonoBehaviour
 	private const int MaxRetries = 200;
 	private const int MaxDepth = 1000;
 	private readonly Dictionary<int, Bounds> BoundsList = new Dictionary<int, Bounds>();
+	private readonly System.Random random = new System.Random();
 
 	private List<RoomInformation> CurrentRooms;
 
@@ -58,16 +59,23 @@ public class DungeonGenerator : MonoBehaviour
 			Vector3 currentRoomExtents = startRoom.Bounds.extents;
 			Vector3 roomExtents = roomData.GetRoomBounds.extents;
 
+			var random = new Vector2(
+				this.random.Next(-1, 1),
+				this.random.Next(-1, 1));
+
 			var pos = new Vector3(
 				startPoint.x + endPoint.x,
 				startRoom.Bounds.center.y,
 				startPoint.z + endPoint.z);
 
 
-			currentBounds = new Bounds(pos + new Vector3(roomSize.x, 0, roomSize.z), roomSize);
+			Vector3 rel = pos - start.Bounds.center;
+
+			currentBounds = new Bounds(pos + new Vector3(rel.x, 0, rel.z), roomSize);
+
 			Debug.Log("Generating new ..");
 			BoundsList[currentDepth] = currentBounds;
-			yield return new WaitForSeconds(0.05f);
+			yield return new WaitForSeconds(0.01f);
 			currentRoom = roomData;
 		} while (IntersectsAny(CurrentRooms, currentBounds));
 
@@ -79,12 +87,24 @@ public class DungeonGenerator : MonoBehaviour
 		roomInformation.Parent = previousRoom;
 		roomInformation.Name   = $"{currentDepth}";
 		CurrentRooms.Add(roomInformation);
+		BoundsList.Remove(currentDepth);
 		StartCoroutine(GenerateRoom(data, startRoom, roomInformation, currentDepth + 1));
 		Debug.Log("Success");
 	}
 
-	private static bool IntersectsAny(IEnumerable<RoomInformation> informations, Bounds bounds)
+	private static bool IntersectsAny(IEnumerable<RoomInformation> informations,
+		Bounds bounds)
 	{
-		return informations.Any(room => room.Bounds.Intersects(bounds));
+		return informations.Any(room => BetterIntersects(room.Bounds, bounds));
+	}
+
+	private static bool BetterIntersects(Bounds a, Bounds b)
+	{
+		Vector3 min = a.min;
+		Vector3 max = a.max;
+
+		return min.x < b.max.x && max.x > b.min.x
+		                       && min.y < b.max.y && max.y > b.min.y
+		                       && min.z < b.max.z && max.z > b.min.z;
 	}
 }
