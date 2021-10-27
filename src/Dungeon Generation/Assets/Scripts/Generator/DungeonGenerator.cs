@@ -31,7 +31,7 @@ public class DungeonGenerator : MonoBehaviour
 		GameObject startRoom = Instantiate(data.StartRoom.Room);
 		if (!startRoom.TryGetComponent(out RoomInformation information)) return;
 		information.Name = "Start";
-		CurrentRooms = new List<RoomInformation>(new[] { information });
+		CurrentRooms     = new List<RoomInformation>(new[] { information });
 		StartCoroutine(GenerateRoom(data, information, information));
 	}
 
@@ -39,6 +39,7 @@ public class DungeonGenerator : MonoBehaviour
 		RoomInformation previousRoom = null, int currentDepth = 0)
 	{
 		if (currentDepth > MaxDepth) yield break;
+		RoomInformation start = previousRoom == null ? startRoom : previousRoom;
 		Bounds currentBounds = default;
 		RoomData currentRoom = null;
 		var retries = 0;
@@ -50,7 +51,6 @@ public class DungeonGenerator : MonoBehaviour
 			RoomData roomData = data.Rooms.Random();
 			Vector3 endPoint = roomData.GetRoomBounds.center;
 
-			RoomInformation start = previousRoom == null ? startRoom : previousRoom;
 			Vector3 startPoint = start.GetRandomPath;
 
 
@@ -58,15 +58,13 @@ public class DungeonGenerator : MonoBehaviour
 			Vector3 currentRoomExtents = startRoom.Bounds.extents;
 			Vector3 roomExtents = roomData.GetRoomBounds.extents;
 
-			Vector3 diff = startPoint - endPoint;
-
 			var pos = new Vector3(
 				startPoint.x + endPoint.x,
 				startRoom.Bounds.center.y,
 				startPoint.z + endPoint.z);
 
 
-			currentBounds = new Bounds(pos, roomSize);
+			currentBounds = new Bounds(pos + new Vector3(roomSize.x, 0, roomSize.z), roomSize);
 			Debug.Log("Generating new ..");
 			BoundsList[currentDepth] = currentBounds;
 			yield return new WaitForSeconds(0.05f);
@@ -79,7 +77,7 @@ public class DungeonGenerator : MonoBehaviour
 			Quaternion.identity);
 		var roomInformation = roomObject.GetComponent<RoomInformation>();
 		roomInformation.Parent = previousRoom;
-		roomInformation.Name = $"{currentDepth}";
+		roomInformation.Name   = $"{currentDepth}";
 		CurrentRooms.Add(roomInformation);
 		StartCoroutine(GenerateRoom(data, startRoom, roomInformation, currentDepth + 1));
 		Debug.Log("Success");
