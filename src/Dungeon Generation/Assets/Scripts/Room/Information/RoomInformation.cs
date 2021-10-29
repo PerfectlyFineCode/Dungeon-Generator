@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+#endif
 using UnityEngine;
 
 public class RoomInformation : MonoBehaviour
 {
-	[field: SerializeField]
-	public RoomInformation Parent { get; set; }
+	[field: SerializeField] public RoomInformation Parent { get; set; }
 
 	public Bounds Bounds
 	{
@@ -20,11 +21,9 @@ public class RoomInformation : MonoBehaviour
 		}
 	}
 
-	[field: SerializeField]
-	public string Name { get; set; }
+	[field: SerializeField] public string Name { get; set; }
 
-	[field: SerializeField]
-	public List<PathBounds> PathBounds { get; set; }
+	[field: SerializeField] public List<PathBounds> PathBounds { get; set; }
 
 	public Vector3 GetRandomPath
 	{
@@ -35,6 +34,7 @@ public class RoomInformation : MonoBehaviour
 		}
 	}
 
+	#if UNITY_EDITOR
 	private void OnDrawGizmos()
 	{
 		var bounds = new Bounds(transform.position, Vector3.zero);
@@ -52,13 +52,15 @@ public class RoomInformation : MonoBehaviour
 		};
 		Handles.Label(bounds.center + new Vector3(0, bounds.size.y, 0), $"{Name}", style);
 	}
+	#endif
 }
 
 [Serializable]
 public class PathBounds
 {
+	#if UNITY_EDITOR
 	[HideInInspector] public BoxBoundsHandle BoundsHandle = new BoxBoundsHandle();
+	#endif
 
-	[field: SerializeField]
-	public Bounds Bounds { get; set; }
+	[field: SerializeField] public Bounds Bounds { get; set; }
 }

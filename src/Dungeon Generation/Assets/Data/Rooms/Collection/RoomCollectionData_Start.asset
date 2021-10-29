@@ -15,4 +15,3 @@ MonoBehaviour:
   <StartRoom>k__BackingField: {fileID: 11400000, guid: 7f514f943b2d425409c46fcc4a63d16b, type: 2}
   <Rooms>k__BackingField:
   - {fileID: 11400000, guid: 7f514f943b2d425409c46fcc4a63d16b, type: 2}
-  - {fileID: 11400000, guid: 56a5b570b8c542845b492ec83abe1c65, type: 2}

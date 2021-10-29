@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class DungeonManager : MonoBehaviour
 {
-	private DungeonGenerator Generator;
+	public DungeonGenerator Generator;
 	private DungeonGeneratorExtended Extended;
 	public Vector3 StartPoint;
 
@@ -17,9 +17,9 @@ public class DungeonManager : MonoBehaviour
 		// Extended = gameObject.AddComponent<DungeonGeneratorExtended>();
 	}
 
-	// Start is called before the first frame update
-	private void Start()
+	public void Generate()
 	{
+		if (!Generator.CanRefresh) return;
 		Generator.Generate(StartPoint, RoomCollectionData);
 	}
 }

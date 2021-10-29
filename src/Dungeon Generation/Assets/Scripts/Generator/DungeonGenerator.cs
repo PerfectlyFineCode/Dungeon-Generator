@@ -1,16 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class DungeonGenerator : MonoBehaviour
 {
 	private const int MaxRetries = 200;
 	private const int MaxDepth = 1000;
-	private readonly Dictionary<int, Bounds> BoundsList = new Dictionary<int, Bounds>();
+	private Dictionary<int, Bounds> BoundsList = new Dictionary<int, Bounds>();
 	private readonly System.Random random = new System.Random();
+	public bool CanRefresh => CurrentWorkers == 0;
+	private bool previousCanRefresh;
+	public UnityEvent<bool> RefreshStatechanged = new UnityEvent<bool>();
 
-	private List<RoomInformation> CurrentRooms;
+	public List<RoomInformation> CurrentRooms;
 
 	private void OnDrawGizmos()
 	{
@@ -30,16 +35,53 @@ public class DungeonGenerator : MonoBehaviour
 	{
 		if (data.StartRoom.Room == null) return;
 		GameObject startRoom = Instantiate(data.StartRoom.Room);
+		Refresh();
+		BoundsList = new Dictionary<int, Bounds>();
+
 		if (!startRoom.TryGetComponent(out RoomInformation information)) return;
 		information.Name = "Start";
 		CurrentRooms     = new List<RoomInformation>(new[] { information });
 		StartCoroutine(GenerateRoom(data, information, information));
 	}
 
+	private void Refresh()
+	{
+		if (CurrentRooms != null && CurrentRooms.Count > 0)
+			foreach (RoomInformation room in CurrentRooms.Where(x => x != null))
+				Destroy(room.gameObject);
+	}
+
+	private int CurrentWorkers;
+
+	private void CheckWorkerAvailable()
+	{
+		bool state = CanRefresh;
+		switch (state)
+		{
+			case true when !previousCanRefresh:
+				previousCanRefresh = true;
+				RefreshStatechanged?.Invoke(true);
+				break;
+			case false when previousCanRefresh:
+				previousCanRefresh = false;
+				RefreshStatechanged?.Invoke(false);
+				break;
+		}
+	}
+
 	private IEnumerator GenerateRoom(RoomCollectionData data, RoomInformation startRoom,
 		RoomInformation previousRoom = null, int currentDepth = 0)
 	{
-		if (currentDepth > MaxDepth) yield break;
+		Interlocked.Increment(ref CurrentWorkers);
+		CheckWorkerAvailable();
+		if (currentDepth > MaxDepth)
+		{
+			Interlocked.Decrement(ref CurrentWorkers);
+			CheckWorkerAvailable();
+			Debug.Log(CurrentWorkers);
+			yield break;
+		}
+
 		RoomInformation start = previousRoom == null ? startRoom : previousRoom;
 		Bounds currentBounds = default;
 		RoomData currentRoom = null;
@@ -47,7 +89,14 @@ public class DungeonGenerator : MonoBehaviour
 		BoundsList.Add(currentDepth, currentBounds);
 		do
 		{
-			if (retries > MaxRetries) break;
+			if (retries > MaxRetries)
+			{
+				Interlocked.Decrement(ref CurrentWorkers);
+				Debug.Log(CurrentWorkers);
+				CheckWorkerAvailable();
+				yield break;
+			}
+
 			retries++;
 			RoomData roomData = data.Rooms.Random();
 			Vector3 endPoint = roomData.GetRoomBounds.center;
@@ -90,6 +139,9 @@ public class DungeonGenerator : MonoBehaviour
 		BoundsList.Remove(currentDepth);
 		StartCoroutine(GenerateRoom(data, startRoom, roomInformation, currentDepth + 1));
 		Debug.Log("Success");
+		Interlocked.Decrement(ref CurrentWorkers);
+		CheckWorkerAvailable();
+		Debug.Log(CurrentWorkers);
 	}
 
 	private static bool IntersectsAny(IEnumerable<RoomInformation> informations,

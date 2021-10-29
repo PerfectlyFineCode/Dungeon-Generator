@@ -1,4 +1,5 @@
 
-Rcsharpsquid:S3903".Move 'RoomInformation' into a named namespace.(ÀÎĞÀ8íÒæÜË/
-Lcsharpsquid:S3903:")Move 'PathBounds' into a named namespace.(ı˜O8îÒæÜË/
-mcsharpsquid:S1104<"DMake this field 'private' and encapsulate it in a 'public' property.(Í‚óÛøÿÿÿÿ8îÒæÜË/
+Rcsharpsquid:S3903
+".Move 'RoomInformation' into a named namespace.(ÀÎĞÀ8íÒæÜË/
+Lcsharpsquid:S3903;")Move 'PathBounds' into a named namespace.(ı˜O8îÒæÜË/
+mcsharpsquid:S1104>"DMake this field 'private' and encapsulate it in a 'public' property.(Í‚óÛøÿÿÿÿ8„ÕªØÌ/

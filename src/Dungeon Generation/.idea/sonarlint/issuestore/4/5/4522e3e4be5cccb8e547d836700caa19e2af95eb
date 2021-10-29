@@ -1,6 +1,8 @@
 
-Kcsharpsquid:S3903"/Move 'DungeonGenerator' into a named namespace.(ôŞğA
-bcsharpsquid:S1117>"9Rename 'random' which hides the field with the same name.(Ùµ¦ şÿÿÿÿ8«‹àŠÌ/
-Xcsharpsquid:S1481;"6Remove the unused local variable 'currentRoomExtents'.(¾‹ú‚øÿÿÿÿ
-Qcsharpsquid:S1481<"/Remove the unused local variable 'roomExtents'.(»õ¡Éûÿÿÿÿ
-Scsharpsquid:S1481>"*Remove the unused local variable 'random'.(Ùµ¦ şÿÿÿÿ8îñŸ‹Ì/
+Kcsharpsquid:S3903"/Move 'DungeonGenerator' into a named namespace.(ôŞğA
+hcsharpsquid:S1104"DMake this field 'private' and encapsulate it in a 'public' property.(áİ¤Ù8­Õ×Ì/
+mcsharpsquid:S1104"DMake this field 'private' and encapsulate it in a 'public' property.(²ô¸ÿÿÿÿÿ8Ë¦ÿ×Ì/
+bcsharpsquid:S1117o"9Rename 'random' which hides the field with the same name.(Ùµ¦ şÿÿÿÿ8¯“£×Ì/
+Xcsharpsquid:S1481l"6Remove the unused local variable 'currentRoomExtents'.(¾‹ú‚øÿÿÿÿ
+Xcsharpsquid:S1481m"/Remove the unused local variable 'roomExtents'.(»õ¡Éûÿÿÿÿ8¯“£×Ì/
+Scsharpsquid:S1481o"*Remove the unused local variable 'random'.(Ùµ¦ şÿÿÿÿ8¯“£×Ì/
